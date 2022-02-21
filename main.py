@@ -1,5 +1,5 @@
 import pygame 
-from main import Snake
+from snake import Snake
 
 size = (w, h) =  (600, 600)
 screen = pygame.display.set_mode(size)
