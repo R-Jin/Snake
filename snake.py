@@ -1,60 +1,49 @@
-import pygame 
-from snake import Snake
+class SnakePart:
 
-size = (w, h) =  (600, 600)
-screen = pygame.display.set_mode(size)
+    def init(self, x, y, dir): 
+        self.x = x
+        self.y = y
+        self.size = 1
+        self.dir = dir
 
+    def getDir(self):
+        return self.dir
 
-def gen_grid(size):
-    """ Generating the grid for the board """
+    def changeDir(self, dir):
+        self.dir = dir
 
-    grid = []
-    for row in range(size):
-        grid.append([])
-        for col in range(size):
-            grid[row].append(0)
+    def updateCoords(self, dir):
+        (self.x, self.y) += dir 
 
-    return grid
-
-
-def draw_grid(grid):
-    """ Draw the cells depending on what state they are in. White for living and black for dead """
-
-    square_w = w / len(grid)
-    h_space = 0
-    for row in range(len(grid)):
-        w_space = 0
-        for col in range(len(grid)):
-            if grid[row][col]:
-                pygame.draw.rect(screen, "#ffffff", (0 + w_space, 0 + h_space, square_w, square_w))
-            else:
-                pygame.draw.rect(screen, "#000000", (0 + w_space, 0 + h_space, square_w, square_w))
-            w_space += square_w
-        h_space += square_w
+    def getCoords(self):
+        return (self.x, self.y)
 
 
-def main():
-    pygame.init()
+class Snake:
+    def init(self):
+        self.parts = [SnakePart(300, 300, (1,0))] # Initialize the first part of the body
+        self.size = 0 
 
-    pygame.display.set_caption("Snake")
+    def getSize(self):
+        return self.size
 
+    def getHead(self):
+        return self.part[0]
 
-    gridSize = 50
+    def getDir(self):
+        self.getHead().getDir()
 
-    grid = gen_grid(gridSize)
+    def grow(self):
+        self.size += 1
+        self.parts.append(SnakePart())
 
-    running = True
-    
-    while running:
+    def updateSnake(self):
+        self.getHead().updateCoords(self.getDir())
+        prevDir = self.getDir()
 
-        draw_grid(grid)
+        for part in self.parts:
+            part.updateCoords(prevDir)
+            #fortsätt här
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-    
-        pygame.display.update()
-
-
-if __name__=="__main__":
-    main()
+    def draw(self):
+        pass
