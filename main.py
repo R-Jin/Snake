@@ -1,36 +1,21 @@
 import pygame 
-from snake import Snake
+from snake import Snake, SnakePart
 
-size = (w, h) =  (600, 600)
-screen = pygame.display.set_mode(size)
-
-
-def gen_grid(size):
-    """ Generating the grid for the board """
-
-    grid = []
-    for row in range(size):
-        grid.append([])
-        for col in range(size):
-            grid[row].append(0)
-
-    return grid
+screenSize = (w, h) =  (600, 600)
+screen = pygame.display.set_mode(screenSize)
 
 
-def draw_grid(grid):
-    """ Draw the cells depending on what state they are in. White for living and black for dead """
+def draw_rect(coords, width, color):
+    (x, y) = (coords[0], coords[1])
+    pygame.draw.rect(screen, color, (x * width, y * width, width, width))
 
-    square_w = w / len(grid)
-    h_space = 0
-    for row in range(len(grid)):
-        w_space = 0
-        for col in range(len(grid)):
-            if grid[row][col]:
-                pygame.draw.rect(screen, "#ffffff", (0 + w_space, 0 + h_space, square_w, square_w))
-            else:
-                pygame.draw.rect(screen, "#000000", (0 + w_space, 0 + h_space, square_w, square_w))
-            w_space += square_w
-        h_space += square_w
+
+def draw_snake(snake, gridSize):
+    snake_size = w / gridSize
+
+    for part in snake.getParts():
+        draw_rect(part.getCoords(), snake_size, "#ffffff")
+
 
 
 def main():
@@ -38,21 +23,37 @@ def main():
 
     pygame.display.set_caption("Snake")
 
-
     gridSize = 50
-
-    grid = gen_grid(gridSize)
 
     running = True
     
+    snake = Snake()
+    i = 0
     while running:
-
-        draw_grid(grid)
+        i += 1
+        screen.fill((0,0,0))
+        draw_snake(snake, gridSize)
+        snake.updateSnake()
+        snake.grow()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-    
+            
+            # Keyboard inputs
+            elif event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_w and snake.getHeadDir()[1] != 1):
+                    snake.changeDir([0, -1])
+                elif (event.key == pygame.K_s and snake.getHeadDir()[1] != -1):
+                    snake.changeDir([0, 1])
+                elif (event.key == pygame.K_a and snake.getHeadDir()[0] != 1):
+                    snake.changeDir([-1, 0])
+                elif (event.key == pygame.K_d and snake.getHeadDir()[0] != -1):
+                    snake.changeDir([1, 0])
+
+
+
+        pygame.time.delay(60)
         pygame.display.update()
 
 
