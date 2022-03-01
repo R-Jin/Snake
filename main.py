@@ -1,61 +1,48 @@
 import pygame 
-from snake import Snake, SnakePart
+from game import Game
 
-screenSize = (w, h) =  (600, 600)
-screen = pygame.display.set_mode(screenSize)
-
-
-def draw_rect(coords, width, color):
-    (x, y) = (coords[0], coords[1])
-    pygame.draw.rect(screen, color, (x * width, y * width, width, width))
-
-
-def draw_snake(snake, gridSize):
-    snake_size = w / gridSize
-
-    for part in snake.getParts():
-        draw_rect(part.getCoords(), snake_size, "#ffffff")
-
-
+pygame.init()
+ 
 
 def main():
+    game = Game()
     pygame.init()
-
     pygame.display.set_caption("Snake")
 
-    gridSize = 50
+    X = game.w
+    Y = game.h
+    font = pygame.font.Font("Roboto-Black.ttf", 32)
+    text1 = font.render('Press space to start', True, (128, 0, 0))
+    textRect = text1.get_rect()
+    textRect.center = (X // 2, Y // 2)
 
-    running = True
-    
-    snake = Snake()
-    i = 0
-    while running:
-        i += 1
-        screen.fill((0,0,0))
-        draw_snake(snake, gridSize)
-        snake.updateSnake()
-        snake.grow()
+    while True:
+        game.screen.fill("black")
+        game.screen.blit(text1, textRect)
+        pygame.display.update()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-            
-            # Keyboard inputs
+                game.running = False
+                break
+
             elif event.type == pygame.KEYDOWN:
-                if (event.key == pygame.K_w and snake.getHeadDir()[1] != 1):
-                    snake.changeDir([0, -1])
-                elif (event.key == pygame.K_s and snake.getHeadDir()[1] != -1):
-                    snake.changeDir([0, 1])
-                elif (event.key == pygame.K_a and snake.getHeadDir()[0] != 1):
-                    snake.changeDir([-1, 0])
-                elif (event.key == pygame.K_d and snake.getHeadDir()[0] != -1):
-                    snake.changeDir([1, 0])
+                if (event.key == pygame.K_SPACE):
+                    game.run()
 
-
-
-        pygame.time.delay(60)
-        pygame.display.update()
-
+        if not game.running:
+            text2 = font.render('You DEADED NOOB Score: ' + str(game.get_score()), True, (128, 0, 0))
+            game.screen.fill("black")
+            textRect = text2.get_rect()
+            textRect.center = (X // 2, Y // 2)
+            game.screen.blit(text2, textRect)
+            pygame.display.update()
+            pygame.time.delay(2000)
+            break
+            
+        
+                    
 
 if __name__=="__main__":
     main()
