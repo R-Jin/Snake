@@ -16,15 +16,14 @@ class Game:
     
     def run(self):
         while self.running:
+            for event in pygame.event.get():
+                self.getKey(event)        #returns false if quit is pressed, otherwise check for keypresses
             self.collision()
             self.screen.fill((0,0,0))
             self.draw_snake(self.snake)
             self.draw_food(self.food)
             self.snake.updateSnake(self.grow)
             self.food_handler()
-
-            for event in pygame.event.get():
-                self.getKey(event)        #returns false if quit is pressed, otherwise check for keypresses
                 
             pygame.time.delay(60)
             pygame.display.update()
